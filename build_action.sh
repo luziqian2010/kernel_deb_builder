@@ -15,7 +15,7 @@ cd "${GITHUB_WORKSPACE}" || exit
 
 # download kernel source
 wget https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/snapshot/linux-next-next-20250120.tar.gz
-tar -xzf linux-next-next-20250120.tar.gz
+tar -xzvf linux-next-next-20250120.tar.gz
 cd linux-next-next-20250120 || exit
 
 # copy config file
