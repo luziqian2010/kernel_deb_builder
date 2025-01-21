@@ -14,9 +14,9 @@ apt build-dep -y linux
 cd "${GITHUB_WORKSPACE}" || exit
 
 # download kernel source
-wget http://www.kernel.org/pub/linux/kernel/v5.x/linux-"$VERSION".tar.xz
-tar -xf linux-"$VERSION".tar.xz
-cd linux-"$VERSION" || exit
+wget https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/snapshot/linux-next-next-20250120.tar.gz
+tar -xzf linux-next-next-20250120.tar.gz
+cd linux-next-next-20250120 || exit
 
 # copy config file
 cp ../config .config
@@ -25,8 +25,7 @@ cp ../config .config
 scripts/config --disable DEBUG_INFO
 
 # apply patches
-# shellcheck source=src/util.sh
-source ../patch.d/*.sh
+# shellcheck source=src/
 
 # build deb packages
 CPU_CORES=$(($(grep -c processor < /proc/cpuinfo)*2))
