@@ -33,7 +33,7 @@ jobs:
           git commit -m "Initial commit"
           make deb-pkg -j$(nproc)
           cd ../
-          mkdir upload
+          mkdir "upload"
           mv *.deb upload
       - name: Generate release tag
         id: tag
