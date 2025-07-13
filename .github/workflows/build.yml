@@ -5,14 +5,38 @@ jobs:
   build:
     name: Build kernel
     runs-on: ubuntu-22.04
-    container: debian:buster
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        run: |
+          sudo apt install neofetch -y
+          neofetch
+          
+      - name: setup environment
+        run: sudo apt install bc debhelper-compat binutils bison dwarves flex gcc git gnupg2 gzip libelf-dev libncurses5-dev libssl-dev make openssl pahole perl-base rsync tar xz-utils libdw-dev:native -y
+        
+      - name: Get Kernel
+        run: |
+          wget https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.15.6.tar.xz
+          tar -xvf linux-6.15.6.tar.xz
+          cp config linux-6.15.6/.config
+          cd linux-6.15.6
+          
+      - name: Build Kernel!!!!
+        run: make -j$(nproc)
 
-      - name: Build
-        run: bash build_action.sh
-
+      - name: Build deb package
+        run: |
+          git init
+          git add .
+          git config --global user.name "Your Name"
+          git config --global user.email "your.email@example.com"
+          git commit -m "Initial commit"
+          make deb-pkg -j$(nproc)
+          cd ..
+          rm -rfv *dbg*.deb
+          mkdir "artifact"
+          mv ./*.deb artifact/
+          
       - name: Artifact
         uses: actions/upload-artifact@v3
         with:
