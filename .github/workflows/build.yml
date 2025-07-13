@@ -32,13 +32,23 @@ jobs:
           git config --global user.email "your.email@example.com"
           git commit -m "Initial commit"
           make deb-pkg -j$(nproc)
-          cd ..
-          rm -rfv *dbg*.deb
-          mkdir "artifact"
-          mv ./*.deb artifact/
-          
-      - name: Artifact
-        uses: actions/upload-artifact@v3
+          cd ../
+          mkdir upload
+          mv *.deb upload
+      - name: Generate release tag
+        id: tag
+        run: |
+          echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
+          touch release.txt
+          [ ${UPLOAD_GOFILE} = true && ${{ steps.gofile.outputs.url }} ] && echo "🔗 [GoFile](${{ steps.gofile.outputs.url }})" >> release.txt
+          echo "status=success" >> $GITHUB_OUTPUT
+
+      - name: Upload firmware to release
+        uses: softprops/action-gh-release@master
+        if: steps.tag.outputs.status == 'success' && !cancelled()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: artifact
-          path: ${{ github.workspace }}/artifact/
+          tag_name: ${{ steps.tag.outputs.release_tag }}
+          body_path: release.txt
+          files: ${{ upload }}/*
