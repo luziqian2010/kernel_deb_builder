@@ -35,6 +35,12 @@ jobs:
           cd ../
           mkdir "upload"
           mv *.deb upload
+          cd upload
+      - name: Upload deb directory
+        uses: actions/upload-artifact@main
+        with:
+          name: Linux_kernel_deb
+          path: ${{ env.FIRMWARE }}
       - name: Generate release tag
         id: tag
         run: |
@@ -51,4 +57,4 @@ jobs:
         with:
           tag_name: ${{ steps.tag.outputs.release_tag }}
           body_path: release.txt
-          files: ${{ upload/ }}/*
+          files: ${{ env.FIRMWARE }}/*
