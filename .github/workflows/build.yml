@@ -18,8 +18,8 @@ jobs:
         run: |
           wget https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.15.6.tar.xz
           tar -xvf linux-6.15.6.tar.xz
-          cp config linux-6.15.6/.config
           cd linux-6.15.6
+          [ -e $CONFIG_FILE ] && mv $CONFIG_FILE linux-6.15.6/.config
           
       - name: Build Kernel!!!!
         run: make -j$(nproc)
